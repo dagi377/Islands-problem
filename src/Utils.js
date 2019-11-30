@@ -13,32 +13,32 @@ export const parseDimension = function (value) {
 }
 
 
-export const createBitmap = (dimension) => {
+export const createBitmap = (dimension,density) => {
 	const n = dimension[0]
 	const m = dimension[1]
 
 	const bitmap = new Array(m)
 	//Create 2D array from dimensions with rand bit assigned to each
 	Array.from(Array(m).keys()).map((y) => {
-		bitmap[y] = Array.from(Array(n).keys()).map((x) => {
-			return cell(x, y, randomBit())
+		return bitmap[y] = Array.from(Array(n).keys()).map((x) => {
+			return cell(x, y, randomBit(density))
 		})
 	});
 	return bitmap
 }
 
 // creates random bitmap Uses getBitmap with random dimnsion
-export const getRandomBitmap = function () {
+export const getRandomDimension = function () {
 	const scale = Math.random() * 100
-	const n = parseInt(Math.random() * scale); //Make the value integer
-	const m = parseInt(Math.random() * scale);
-	console.log("on random", n + " " + m)
-	return createBitmap([n, m])
+	const n = parseInt(Math.random() * scale + 5); //Make the value integer
+	const m = parseInt(Math.random() * scale + 5);
+	return [n, m]
 }
 
 // Generate 0 or 1 randomly
-const randomBit = () => {
-	return Math.round(Math.random())
+const randomBit = (density = 0.6) => {
+	// let's increase the the number  of Islands by decreasing the density
+	return Math.round(Math.random() * density)
 }
 
 //Creates a cell with information about it's
