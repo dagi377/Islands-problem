@@ -1,44 +1,62 @@
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
+    height: 40vmin;
 }
 
 .App-header {
-  background-color: #607d8b36;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: #607d8b36;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
-.App-header *{
-  width: 20em;
-  margin: 5px;
-  padding: 0px 10px;
-  height: 2em;
+
+.App-header * {
+    width: 20em;
+    margin: 5px;
+    padding: 0px 10px;
+    height: 2em;
 }
+
 .App-link {
-  color: #09d3ac;
+    color: #09d3ac;
 }
 
-.dimension{
-  padding: 8px;
-}
-.board-container{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+
+.board-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
 }
-.board{
-  min-height: 100%;
-  align-items: center;
-  justify-content: center;
-  background-color: gray;
-  position: relative;
-  margin: 20px;
+
+.board {
+    min-height: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: #00968808;
+    position: relative;
+    border: 0.5px solid #6969690d;
+}
+
+.answer {
+    color: darkgreen;
+}
+
+.info-bar {
+    margin: 10px 0px;
+
+}
+
+.info-bar span {
+    margin: 0px 20px;
+}
+
+.draw-mode {
+    color: darkred;
 }

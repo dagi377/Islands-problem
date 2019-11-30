@@ -13,15 +13,17 @@ export const parseDimension = function (value) {
 }
 
 
-export const createBitmap = (dimension,density) => {
+export const createBitmap = (dimension, density, mode) => {
 	const n = dimension[0]
 	const m = dimension[1]
-
+	const isDrawing = mode === 0
 	const bitmap = new Array(m)
 	//Create 2D array from dimensions with rand bit assigned to each
 	Array.from(Array(m).keys()).map((y) => {
 		return bitmap[y] = Array.from(Array(n).keys()).map((x) => {
-			return cell(x, y, randomBit(density))
+			const bit = isDrawing ? 0 : randomBit(density)
+
+			return cell(x, y, bit)
 		})
 	});
 	return bitmap

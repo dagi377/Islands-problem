@@ -5,7 +5,7 @@
  */
 
 const config = {
-	"cellSize": 14,
-	"density": 0.7
+	"cellSize": 20,
+	"density": 0.6
 }
 export default config;

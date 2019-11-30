@@ -1,40 +1,41 @@
 import React from 'react';
 import './App.css';
-import Header from "./Header";
+import {Header, InfoBar} from "./Components";
 import {createBitmap, getRandomDimension, parseDimension} from "./Utils"
 import Board from "./Board";
 import config from "./Config";
 
+const {cellSize, density} = config
 const APPLICATION_MODES = {
 	"ON_START": 1,
-	"ON_DRAW": 2
+	"ON_DRAW": 0
 };
 
 class App extends React.Component {
 	constructor(props) {
 		super(props);
-		const {cellSize, density} = config
 		this.state = {
 			// Before we click Draw / Randomize
 			mode: APPLICATION_MODES.ON_START,
 			dimension: [],
 			bitmap: null,
 			cellSize,
+			islands: null,
 			density
 		}
 
 	}
 
 	onDraw = () => {
-		this.setState({mode: APPLICATION_MODES.ON_DRAW})
+		this.setState({mode: APPLICATION_MODES.ON_DRAW}, () => {
+			this.onRandomize()
+		})
 	};
 
 	updateBitmapState = (dimension) => {
-		const bitmap = createBitmap(dimension, this.state.density);
-		//Only update on dimension is different and update states together
-		if (this.state.dimension != dimension) {
-			const mode = APPLICATION_MODES.ON_DRAW;
-			this.setState({mode, bitmap, dimension})
+		if (this.state.dimension !== dimension) {
+			const bitmap = createBitmap(dimension, density, this.state.mode);
+			this.setState({bitmap, dimension, islands: null})
 		}
 	};
 
@@ -58,52 +59,54 @@ class App extends React.Component {
 		if (cellSizeValid) {
 			this.setState({cellSize})
 		}
-	}
+	};
 
 	onCellDragged = (cellInfo) => {
+		const isDrawMode = this.state.mode === APPLICATION_MODES.ON_DRAW
+		if (!isDrawMode) {
+			return
+		}
 		const bitmap = this.state.bitmap;
-		bitmap[cellInfo.m][cellInfo.n].bit = Math.abs(cellInfo.bit - 1)
+		bitmap[cellInfo.m][cellInfo.n].bit = 1
 		this.setState({
 			bitmap
 		})
-	}
+	};
 
-	onSolve = () => {
-		if (!dimension && !this.state.bitmap) {
-			return false
+	markEveryCell = (j, i, bitmap, island) => {
+		for (let k = Math.max(0, j - 1); k <= Math.min(bitmap.length - 1, j + 1); k++) {
+			for (let l = Math.max(0, i - 1); l <= Math.min(bitmap[0].length - 1, i + 1); l++) {
+				if (bitmap[k][l].i == undefined && bitmap[k][l].bit) {
+					bitmap[k][l].i = island;
+					this.markEveryCell(k, l, bitmap, island)
+				}
+			}
 		}
-		const bitmap = this.state.bitmap
-		const dimension = this.state.dimension
-		const islands = []
-		const n = dimension[0]
-		const m = dimension[1]
-		for (let j = 0; j < m; i++) {
+	}
+	onSolve = () => {
+		const {bitmap, dimension} = this.state;
+		const mode = APPLICATION_MODES.ON_START
+		const islands = [];
+		const n = dimension[0];
+		const m = dimension[1];
+		for (let j = 0; j < m; j++) {
 			for (let i = 0; i < n; i++) {
 				if (bitmap[j][i].bit) {
-					const island = islands.length + 1
-					if (!islands.includes(island)) {
-						islands.push(island)
-						bitmap[j][i].i = island
-					}
-					// findAndMarkAdjacent
-					for (let k = Math.max(0, j - 1); k <= Math.min(m, j + 1); k++) {
-						for (let l = Math.max(0, i - 1); l <= Math.min(n, i + 1); l++) {
-							bitmap[k][l].i = island
-						}
+					// if already visited the i value is the island
+					if (bitmap[j][i].i == undefined) {
+						let islandValue = islands.length + 1
+						islands.push(islandValue)
+						this.markEveryCell(j, i, bitmap, islandValue)
 					}
 				}
 			}
 		}
-
-		console.log(this.state.bitmap)
-		console.log(bitmap)
-	}
+		this.setState({bitmap, islands: islands.length, mode})
+	};
 
 	render() {
 		const {onRandomize, onDraw, onDimensionUpdated, onCellSizeChange, onCellDragged, onSolve} = this;
-		const {bitmap, dimension, mode, cellSize} = this.state;
-		const Greeting = <div className={"greeting"}>Click to play</div>;
-		const showGreeting = mode === APPLICATION_MODES.ON_START;
+		const {bitmap, dimension, mode, cellSize, islands} = this.state;
 		return <div className="App">
 			<Header dimension={dimension}
 					onDimensionUpdated={onDimensionUpdated}
@@ -111,17 +114,16 @@ class App extends React.Component {
 					onCellSizeChange={onCellSizeChange}
 					onDraw={onDraw}
 					onSolve={onSolve}/>
-			{
-				showGreeting ? Greeting :
-					<div className={"board-container"}>
-						<div className={"dimension"}>{`Displaying results for ${dimension}`} </div>
-						<Board
-							bitmap={bitmap}
-							mode={mode}
-							dimension={dimension}
-							cellSize={cellSize}
-							onCellDragged={onCellDragged}/>
-					</div>
+			{bitmap &&
+			<div className={"board-container"}>
+				<InfoBar dimension={dimension} islands={islands} mode={mode}/>
+				<Board
+					bitmap={bitmap}
+					mode={mode}
+					dimension={dimension}
+					cellSize={cellSize}
+					onCellDragged={onCellDragged}/>
+			</div>
 			}
 		</div>
 	}
