@@ -22,7 +22,8 @@ export const Header = ({onRandomize, onDraw, onDimensionUpdated, onCellSizeChang
 	</div>
 }
 
-export const InfoBar = ({islands, mode}) => <div className={"info-bar"}>
+export const InfoBar = ({dimension, islands, mode}) => <div className={"info-bar"}>
+	{dimension && <span className={"dimension"}>{ `(n,m)=(${dimension[0]+","+dimension[1]})`}</span>}
 	<span className={"answer"}>{(islands !== null) && `This bitmap has ${islands} Islands`}</span>
 	<span className={"draw-mode"}>{(APPLICATION_MODES.ON_DRAW === mode) ? `Drawing mode is ON` : ""}</span>
 </div>
@@ -39,7 +40,6 @@ export const Cell = ({n, m, i, bit, cellSize, onCellDragged}) => {
 		minHeight: cellSize + "px"
 	};
 	return <div
-		data={JSON.stringify({n, m, bit, i})}
 		draggable={true}
 		style={style}
 		onDragEnter={() => onCellDragged({n, m, bit})}/>

@@ -97,7 +97,7 @@ class App extends React.Component {
 				onSolve={onSolve}/>
 			{bitmap &&
 			<div className={"board-container"}>
-				<InfoBar islands={islands} mode={mode}/>
+				<InfoBar dimension={dimension} islands={islands} mode={mode}/>
 				<Board
 					bitmap={bitmap}
 					mode={mode}

@@ -1,5 +1,71 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+
+
+
+## How to test the application 
+
+ 1. Change bitmap dimension 
+ 
+        simply change the dimension by writing two integers separated by a delimiter  
+ 
+ 2. Randomize
+        
+        Hit Randomize to create a random bitmap
+ 
+     
+ 3. Draw 
+        
+        Hit  Draw each time you want to draw by  draging on the board.
+ 
+   
+ 4. Cell Size 
+  
+        Change the size of each cell in the board by changing this value. 
+        Valid values are 2  up to  40. meaning the smallest cell is 2px square and the biggest is 40px square.
+        
+ 
+ 5. Solve 
+ 
+         Hit solve to ge number of islands at any point. 
+ 
+ 
+    On changing the values like cell size and dimension the app will
+    update it slef when you stop typing / on loosing focus.
+
+ 
+ 6. Density : update the config file if you want play with the density
+           
+        This requires updating the config file. 
+        Density is how sparse the labelled cells are in the bitmap.
+        Valid values are  (0.6 - 0.9)
+
+
+## How to run 
+ 
+ ```$xslt
+> npm start 
+
+or
+ 
+> s 
+
+```
+
+
+
+Now visit  http://localhost:3000/ 
+
+
+## Sample Input for n,m = 34,56 with cell Size = 29 
+
+![alt text](public/input.png)
+
+## Sample output  for n,m = 34,56 with cell Size = 29 
+
+![alt text](public/solved.png)
+
+
 ## Available Scripts
 
 
