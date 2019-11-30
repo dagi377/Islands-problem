@@ -1,6 +1,17 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## How to run 
+ 
+ ```$xslt
+> npm start 
+
+or
+ 
+> s 
+
+```
 
 
+
+Now visit  http://localhost:3000/ 
 
 
 ## How to test the application 
@@ -41,29 +52,21 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
         Valid values are  (0.6 - 0.9)
 
 
-## How to run 
- 
- ```$xslt
-> npm start 
-
-or
- 
-> s 
-
-```
-
-
-
-Now visit  http://localhost:3000/ 
-
 
 ## Sample Input for n,m = 34,56 with cell Size = 29 
 
-![alt text](public/input.png)
+![alt text](https://raw.githubusercontent.com/username/projectname/branch/public/input.png)
 
 ## Sample output  for n,m = 34,56 with cell Size = 29 
 
 ![alt text](public/solved.png)
+
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+
+
+
 
 
 ## Available Scripts
