@@ -1,8 +1,9 @@
 import React from 'react';
 import './App.css';
-import {Board, Header, InfoBar} from "./Components";
+import {Header, InfoBar} from "./Components";
 import {countAndMarkIslands, createBitmap, getRandomDimension, parseDimension} from "./Utils"
 import config from "./Config";
+import Board from "./Board"
 
 const {cellSize, density} = config
 const APPLICATION_MODES = {
@@ -10,6 +11,16 @@ const APPLICATION_MODES = {
 	"ON_DRAW": 0,
 	"ON_SOLVED": 2
 };
+const height = window.innerHeight - 80;
+const width = window.innerWidth - 50;
+const canvasContainer = {
+	maxWidth: `${width}px`,
+	maxHeight: `${height}px`,
+	position: "absolute",
+	left: "20px",
+	minWidth: `${width}px`,
+	minHeight: `${height}px`,
+}
 
 class App extends React.Component {
 	constructor(props) {
@@ -18,26 +29,23 @@ class App extends React.Component {
 			mode: APPLICATION_MODES.ON_START,
 			dimension: [],
 			bitmap: null,
-			cellSize,
+			cellSize: 150,
 			islands: null,
 			density
 		}
 
 	}
 
-	onDraw = () => {
-		this.onRandomize(APPLICATION_MODES.ON_DRAW, this.state.dimension)
-	};
-
 	updateBitmapState = (dimension, mode) => {
 		const bitmap = createBitmap(dimension, density, mode);
 		this.setState({bitmap, dimension, mode, islands: null})
 	};
 
-	onRandomize = (mode, dimension) => {
+	onRandomize = (mode) => {
+		let {dimension} = this.state
 		this.setState({mode}, () => {
-			const newDimension = dimension || getRandomDimension();
-			this.updateBitmapState(newDimension, mode)
+			dimension = dimension.length ? dimension : getRandomDimension();
+			this.updateBitmapState(dimension, mode)
 		})
 
 	};
@@ -55,22 +63,10 @@ class App extends React.Component {
 
 	onCellSizeChange = (event) => {
 		const cellSize = parseInt(event.target.value);
-		const cellSizeValid = !isNaN(cellSize) && cellSize < 40 && cellSize > 1;
+		const cellSizeValid = !isNaN(cellSize) && cellSize > 80 && cellSize < 250;
 		if (cellSizeValid) {
 			this.setState({cellSize})
 		}
-	};
-
-	onCellDragged = (cellInfo) => {
-		const isDrawMode = this.state.mode === APPLICATION_MODES.ON_DRAW
-		if (!isDrawMode) {
-			return
-		}
-		const bitmap = this.state.bitmap;
-		bitmap[cellInfo.m][cellInfo.n].bit = 1
-		this.setState({
-			bitmap
-		})
 	};
 
 
@@ -85,26 +81,23 @@ class App extends React.Component {
 	};
 
 	render() {
-		const {onRandomize, onDraw, onDimensionUpdated, onCellSizeChange, onCellDragged, onSolve} = this;
-		const {bitmap, dimension, mode, cellSize, islands} = this.state;
+		const {onRandomize, onDimensionUpdated, onCellSizeChange, onSolve} = this;
+		const {bitmap, dimension, mode, islands} = this.state;
+		if (bitmap) {
+			Board.create(bitmap, this.state.cellSize)
+		}
 
 		return <div className="App">
 			<Header
 				onDimensionUpdated={onDimensionUpdated}
 				onRandomize={onRandomize}
 				onCellSizeChange={onCellSizeChange}
-				onDraw={onDraw}
 				onSolve={onSolve}/>
 			{bitmap &&
 			<div className={"board-container"}>
 				<InfoBar dimension={dimension} islands={islands} mode={mode}/>
-				<Board
-					bitmap={bitmap}
-					mode={mode}
-					cellSize={cellSize}
-					onCellDragged={onCellDragged}/>
-			</div>
-			}
+			</div>}
+			<div className={"canvas-container"} style={canvasContainer}></div>
 		</div>
 	}
 

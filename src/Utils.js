@@ -1,4 +1,6 @@
 const regCaptureNumbers = /(\d+)([^\d]+)(\d+)/
+const white = "rgb(255, 255,255)"
+const black = "rgb(0, 0,0)"
 export const parseDimension = function (value) {
 	const regResult = new RegExp(regCaptureNumbers).exec(value)
 	if (!regResult) {
@@ -21,7 +23,6 @@ export const createBitmap = (dimension, density, mode) => {
 	Array.from(Array(m).keys()).map((y) => {
 		return bitmap[y] = Array.from(Array(n).keys()).map((x) => {
 			const bit = isDrawing ? 0 : randomBit(density)
-
 			return cell(x, y, bit)
 		})
 	});
@@ -35,7 +36,7 @@ export const getRandomDimension = function () {
 	return [n, m]
 }
 
-const randomBit = (density = 0.6) => {
+const randomBit = (density = 0.55) => {
 	return Math.round(Math.random() * density)
 }
 
@@ -47,16 +48,16 @@ const randomBit = (density = 0.6) => {
  */
 
 const cell = (n, m, bit) => {
+	const c = bit ? black : white
 	return {
-		n, m, bit
+		n, m, bit, c
 	}
 };
 
-export  const getUniqueColor = (islandIndex) => {
+export const getUniqueColor = (islandIndex) => {
 	const offset = (islandIndex * 150) % 255;
 	const offset2 = (islandIndex * 20) % 255;
 	const offset3 = (islandIndex * 200) % 255;
-
 	return `rgb(${offset}, ${offset2},${offset3})`;
 }
 
@@ -67,12 +68,13 @@ export  const getUniqueColor = (islandIndex) => {
  * bitmap : 2D array  containing node information
  * island  : island value of the current cell
  * */
-
+//Not pure function
 export const markEveryAdjacentCell = (j, i, bitmap, island) => {
 	for (let k = Math.max(0, j - 1); k <= Math.min(bitmap.length - 1, j + 1); k++) {
 		for (let l = Math.max(0, i - 1); l <= Math.min(bitmap[0].length - 1, i + 1); l++) {
 			if (!bitmap[k][l].i && bitmap[k][l].bit) {
 				bitmap[k][l].i = island;
+				bitmap[k][l].c = getUniqueColor(island);
 				markEveryAdjacentCell(k, l, bitmap, island)
 			}
 		}
@@ -80,8 +82,8 @@ export const markEveryAdjacentCell = (j, i, bitmap, island) => {
 }
 
 /**
- * bitmap 2D array
- * dimension  the dimension of the bitmap
+ * bitmap : 2D array
+ * dimension :  the dimension of the bitmap
  */
 
 export const countAndMarkIslands = (bitmap, dimension) => {
@@ -99,3 +101,5 @@ export const countAndMarkIslands = (bitmap, dimension) => {
 	}
 	return islands.length
 }
+
+
