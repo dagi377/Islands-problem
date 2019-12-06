@@ -6,6 +6,6 @@
 
 const config = {
 	"cellSize": 20,
-	"density": 0.6
+	"density": 0.55
 }
 export default config;
